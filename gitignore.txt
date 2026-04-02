@@ -1,0 +1,15 @@
+*.idea
+*.xml
+*.iml
+*.venv
+*.cache
+*.npy
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.log
+*.pyc
+*.pt
+*.zip
+*.pth
