@@ -8,7 +8,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
-## 1. 네트워크 구축하기 (Unet 클래스는 기존과 동일하므로 생략하거나 그대로 두시면 됩니다)
+## 1. 네트워크 구축하기 
 class Unet(nn.Module):
     def __init__(self):
         super(Unet, self).__init__()
@@ -62,7 +62,7 @@ class Unet(nn.Module):
         x = self.fc(dec1_1)
         return x
 
-## 2. 데이터셋 및 트랜스폼 정의 (기존과 동일)
+## 2. 데이터셋 및 트랜스폼 정의 
 class AutumnDataset(torch.utils.data.Dataset):
     def __init__(self, data_dir, transform=None):
         self.data_dir = data_dir
@@ -154,7 +154,7 @@ def main():
                 np.save(os.path.join(result_dir, 'numpy', 'input_%04d.npy' % idx), input_np[j].squeeze())
                 np.save(os.path.join(result_dir, 'numpy', 'output_%04d.npy' % idx), output_np[j].squeeze())
 
-        # 이 print 문을 main 함수 내부(루프 바깥)로 들여쓰기 했습니다.
+        
         if batch > 0:
             print('AVERAGE : BATCH %04d/%04d | LOSS %.4f' % (batch, num_batch_test, np.mean(loss_arr)))
         else:
