@@ -29,9 +29,9 @@ class UNet(nn.Module):
         # 이미지에서 점점 더 추상적인 feature 추출
         # 해상도 ↓ / 채널 ↑
 
-        self.enc1_1 = CBR2d(1, 64)
+        self.enc1_1 = CBR2d(1, 64)  # 1-> 64채널로 feature 추출 
         self.enc1_2 = CBR2d(64, 64)
-        self.pool1 = nn.MaxPool2d(2)
+        self.pool1 = nn.MaxPool2d(2) # feature map 크기 줄임 
 
         self.enc2_1 = CBR2d(64, 128)
         self.enc2_2 = CBR2d(128, 128)
@@ -45,7 +45,7 @@ class UNet(nn.Module):
         self.enc4_2 = CBR2d(512, 512)
         self.pool4 = nn.MaxPool2d(2)
 
-        # Bottleneck (가장 압축된 표현)
+        # Bottleneck (가장 압축된 표현) -> 추상적인 feature 학습 
         self.enc5_1 = CBR2d(512, 1024)
 
         # =========================
@@ -77,6 +77,7 @@ class UNet(nn.Module):
 
         # Final Layer (1x1 Conv)
         # 각 픽셀에 대해 binary classification 수행
+        # 최종 1채널 출력
         self.fc = nn.Conv2d(64, 1, kernel_size=1)
 
     def forward(self, x):
@@ -104,9 +105,9 @@ class UNet(nn.Module):
         # 업샘플링 + Skip Connection
         dec5_1 = self.dec5_1(enc5_1)
 
-        # Skip Connection: encoder의 feature map과 결합
+        # Skip Connection: 위치 정봅 손실 보완 
         unpool4 = self.unpool4(dec5_1)
-        cat4 = torch.cat((unpool4, enc4_2), dim=1)
+        cat4 = torch.cat((unpool4, enc4_2), dim=1)  
         dec4_2 = self.dec4_2(cat4)
         dec4_1 = self.dec4_1(dec4_2)
 
