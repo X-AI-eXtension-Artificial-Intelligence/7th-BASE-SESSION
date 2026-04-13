@@ -14,6 +14,7 @@ from torchvision import transforms
 # =========================
 # 설정
 # =========================
+# 학습률, 배치 크기, epoch 수 설정 
 lr = 1e-3
 batch_size = 2
 num_epoch = 5
@@ -44,8 +45,8 @@ loader_train = DataLoader(dataset_train, batch_size=batch_size, shuffle=True)
 # =========================
 net = UNet().to(device)
 
-fn_loss = nn.BCEWithLogitsLoss().to(device)
-optim = torch.optim.Adam(net.parameters(), lr=lr)
+fn_loss = nn.BCEWithLogitsLoss().to(device) # 픽셀단위 이진 분류 문제이기 떄문에 BCE loss 사용 
+optim = torch.optim.Adam(net.parameters(), lr=lr) # 가중치 업데이트 
 
 # =========================
 # 저장 폴더 생성
@@ -59,29 +60,30 @@ for epoch in range(num_epoch):
     net.train()
     loss_arr = []
 
-    for data in loader_train:
+    for data in loader_train:   # 데이터 batch 단위로 로드 
         label = data['label'].to(device)
         input = data['input'].to(device)
 
-        optim.zero_grad()
+        optim.zero_grad()  # gradient 초기화 
 
-        output = net(input)
-        loss = fn_loss(output, label)
+        output = net(input)  # 입력 데이터 모델에 넣어서 예측갑 생성
+        loss = fn_loss(output, label) # 예측값, 정답값 차이 계산 
 
-        loss.backward()
-        optim.step()
+        loss.backward() # loss 기반한 gradient 계산
+        optim.step()  # 가중치 업데이트 
 
         loss_arr.append(loss.item())
 
     print(f"EPOCH {epoch+1} | LOSS {np.mean(loss_arr):.4f}")
 
+    # 평가 
     with torch.no_grad():
         net.eval()
         for batch, data in enumerate(loader_train):
             label = data['label'].to(device)
             input = data['input'].to(device)
 
-            output = net(input)
+            output = net(input) # 학습된 모델로 실제 예측 결과 생성 
 
             # numpy 변환
             input_np = input.cpu().numpy()[0,0]
