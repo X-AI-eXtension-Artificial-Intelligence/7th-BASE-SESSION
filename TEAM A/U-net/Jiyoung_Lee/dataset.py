@@ -19,7 +19,7 @@ class Dataset(torch.utils.data.Dataset):
 
         lst_data = os.listdir(self.data_dir)
 
-        # input / label 파일 분리
+        # input / label 파일 분리해 리스트로 관리 
         self.lst_label = sorted([f for f in lst_data if f.startswith('label')])
         self.lst_input = sorted([f for f in lst_data if f.startswith('input')])
 
@@ -27,11 +27,11 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.lst_label)
 
     def __getitem__(self, index):
-        # npy 파일 로드
+        # npy 파일 로드해 input, label로 데이터 구성 
         label = np.load(os.path.join(self.data_dir, self.lst_label[index]))
         input = np.load(os.path.join(self.data_dir, self.lst_input[index]))
 
-        # [0,255] → [0,1] 정규화 (학습 안정성 향상)
+        # [0,255] → 픽셀 값을 [0,1] 정규화 (학습 안정성 향상)
         label = label / 255.0
         input = input / 255.0
 
