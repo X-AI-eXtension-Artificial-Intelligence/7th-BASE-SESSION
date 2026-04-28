@@ -1,0 +1,112 @@
+{
+  "seed": 42,
+  "device": "cuda",
+  "torch_version": "2.10.0+cu128",
+  "epochs": 8,
+  "batch_size": 64,
+  "hidden_size": 128,
+  "learning_rate": 0.0003,
+  "max_length": 10,
+  "max_pairs": 12000,
+  "num_pairs": 10599,
+  "input_language": "fra",
+  "output_language": "eng",
+  "input_vocab_size": 4346,
+  "output_vocab_size": 2804,
+  "final_train_loss": 1.9327199021017696,
+  "training_seconds": 32.431880712509155,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 4.708896323858974
+    },
+    {
+      "epoch": 2,
+      "loss": 3.0993228145392546
+    },
+    {
+      "epoch": 3,
+      "loss": 2.779985871659704
+    },
+    {
+      "epoch": 4,
+      "loss": 2.5037576462849076
+    },
+    {
+      "epoch": 5,
+      "loss": 2.3009439692439804
+    },
+    {
+      "epoch": 6,
+      "loss": 2.152836459228791
+    },
+    {
+      "epoch": 7,
+      "loss": 2.03432562839554
+    },
+    {
+      "epoch": 8,
+      "loss": 1.9327199021017696
+    }
+  ],
+  "sample_results": [
+    {
+      "source_french": "j ai ans .",
+      "target_english": "i m .",
+      "predicted_english": "i m going ."
+    },
+    {
+      "source_french": "je vais bien .",
+      "target_english": "i m ok .",
+      "predicted_english": "i m going to be ."
+    },
+    {
+      "source_french": "ca va .",
+      "target_english": "i m ok .",
+      "predicted_english": "i m going to ."
+    },
+    {
+      "source_french": "je suis gras .",
+      "target_english": "i m fat .",
+      "predicted_english": "i m ."
+    },
+    {
+      "source_french": "je suis gros .",
+      "target_english": "i m fat .",
+      "predicted_english": "i m a ."
+    },
+    {
+      "source_french": "je suis en forme .",
+      "target_english": "i m fit .",
+      "predicted_english": "i m in the same ."
+    },
+    {
+      "source_french": "je suis touche !",
+      "target_english": "i m hit !",
+      "predicted_english": "i m sorry ."
+    },
+    {
+      "source_french": "je suis touchee !",
+      "target_english": "i m hit !",
+      "predicted_english": "i m going to be ."
+    }
+  ],
+  "attention_heatmap_example": {
+    "source_french": "j ai ans .",
+    "target_english": "i m .",
+    "predicted_english": "i m going .",
+    "source_tokens": [
+      "j",
+      "ai",
+      "ans",
+      ".",
+      "EOS"
+    ],
+    "predicted_tokens": [
+      "i",
+      "m",
+      "going",
+      "."
+    ]
+  }
+}
