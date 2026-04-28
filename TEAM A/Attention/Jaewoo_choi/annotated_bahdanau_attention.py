@@ -15,7 +15,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 SOS_TOKEN = 0
 EOS_TOKEN = 1
 PAD_TOKEN = 2
@@ -35,15 +34,11 @@ class EncoderRNN(nn.Module):
 
     def __init__(self, input_vocab_size, hidden_size, pad_idx=PAD_TOKEN):
         super().__init__()
-        self.hidden_size = hidden_size
         self.embedding = nn.Embedding(input_vocab_size, hidden_size, padding_idx=pad_idx)
         self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
 
     def forward(self, input_ids):
-        # input_ids: [batch_size, source_length]
         embedded = self.embedding(input_ids)
-        # outputs: source token별 hidden state sequence
-        # hidden: 마지막 시점의 hidden state
         outputs, hidden = self.gru(embedded)
         return outputs, hidden
 
@@ -77,23 +72,11 @@ class BahdanauAttention(nn.Module):
         self.V = nn.Linear(hidden_size, 1)
 
     def forward(self, query, values, mask):
-        # query: decoder hidden state, [batch_size, 1, hidden_size]
-        # values: encoder outputs, [batch_size, source_length, hidden_size]
-        # mask: padding 제외용 mask, [batch_size, source_length]
-
-        # additive attention score 계산
         scores = self.V(torch.tanh(self.W_query(query) + self.W_values(values)))
         scores = scores.squeeze(-1)
-
-        # padding 위치는 실제 단어가 아니므로 attention 확률이 0에 가깝게 되도록 마스킹한다.
         scores = scores.masked_fill(mask == 0, -1e9)
-
-        # source token 위치별 attention distribution
         alphas = F.softmax(scores, dim=-1)
-
-        # context vector는 encoder values의 가중합이다.
         context = torch.bmm(alphas.unsqueeze(1), values)
-
         return context, alphas
 
 
@@ -123,29 +106,18 @@ class AttnDecoderRNN(nn.Module):
 
     def forward_step(self, decoder_input, decoder_hidden, encoder_outputs, input_mask):
         embedded = self.embedding(decoder_input)
-
-        # GRU hidden shape은 [num_layers, batch, hidden]이다.
-        # attention query로 사용하기 위해 [batch, 1, hidden]으로 변환한다.
         query = decoder_hidden.permute(1, 0, 2)
-
         context, attn_weights = self.attention(query, encoder_outputs, input_mask)
-
-        # context는 현재 target token 생성을 위해 선택된 source 정보다.
-        # 이전 token embedding과 context를 함께 GRU에 넣는다.
         gru_input = torch.cat([embedded, context], dim=-1)
-
         output, hidden = self.gru(gru_input, decoder_hidden)
         logits = self.out(output)
-
         return logits, hidden, attn_weights
 
     def forward(self, encoder_outputs, encoder_hidden, input_mask, target_ids=None, max_len=MAX_LENGTH):
         batch_size = encoder_outputs.size(0)
         device = encoder_outputs.device
-
         decoder_input = torch.full((batch_size, 1), SOS_TOKEN, dtype=torch.long, device=device)
         decoder_hidden = encoder_hidden
-
         logits_all = []
         attn_all = []
 
@@ -153,29 +125,21 @@ class AttnDecoderRNN(nn.Module):
             logits, decoder_hidden, attn_weights = self.forward_step(
                 decoder_input, decoder_hidden, encoder_outputs, input_mask
             )
-
             logits_all.append(logits)
             attn_all.append(attn_weights.unsqueeze(1))
-
             if target_ids is not None:
-                # 학습 시에는 teacher forcing을 사용한다.
                 decoder_input = target_ids[:, t].unsqueeze(1)
             else:
-                # 추론 시에는 greedy decoding을 사용한다.
                 decoder_input = logits.argmax(dim=-1)
 
         logits_all = torch.cat(logits_all, dim=1)
         attn_all = torch.cat(attn_all, dim=1)
-
         return logits_all, decoder_hidden, attn_all
 
 
 class EncoderDecoder(nn.Module):
     """
     Encoder와 Bahdanau Attention Decoder를 결합한 전체 seq2seq 모델이다.
-
-    원본 mhauskn/pytorch_attention의 EncoderDecoder 구조와 동일한 목적을 갖는다.
-    source sentence를 encoder에 통과시키고, decoder가 attention을 사용해 target sentence를 생성한다.
     """
 
     def __init__(self, input_vocab_size, output_vocab_size, hidden_size):

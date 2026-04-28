@@ -19,7 +19,7 @@
 
 ## 3. 이론적 배경
 
-Bahdanau Attention은 2015년 Neural Machine Translation by Jointly Learning to Align and Translate 논문에서 제안된 additive attention 방식이다.
+Bahdanau Attention은 2015년 `Neural Machine Translation by Jointly Learning to Align and Translate` 논문에서 제안된 additive attention 방식이다.
 
 기존 encoder-decoder 모델은 source sentence 전체를 하나의 고정 길이 vector에 압축해야 했다.
 이 방식은 문장이 길어질수록 정보 병목이 발생할 수 있다.
@@ -37,25 +37,7 @@ Bahdanau Attention은 decoder가 매 target 시점마다 encoder hidden state �
 
 여기서 `alpha_{t,i}`는 target 시점 `t`에서 source 위치 `i`에 대한 attention weight다.
 
-## 4. 모델 구조
-
-### Encoder
-
-입력 프랑스어 문장을 단어 id로 변환한 뒤 embedding layer와 GRU를 통과시켰다.
-Encoder는 각 source token 위치별 hidden state sequence를 생성한다.
-
-### Bahdanau Attention
-
-Decoder hidden state를 query로 사용하고, encoder output sequence를 values로 사용했다.
-Additive attention score를 계산한 뒤 softmax를 적용하여 source token별 attention weight를 구했다.
-PAD 위치는 mask를 사용해 attention 계산에서 제외했다.
-
-### Decoder
-
-Decoder는 이전 target token embedding과 attention context vector를 concat한 뒤 GRU에 입력한다.
-학습 시에는 teacher forcing을 사용했고, 추론 시에는 greedy decoding을 사용했다.
-
-## 5. 실행 환경
+## 4. 실행 환경
 
 - Device: cuda
 - PyTorch: 2.10.0+cu128
@@ -68,14 +50,67 @@ Decoder는 이전 target token embedding과 attention context vector를 concat�
 - Input vocab size: 4346
 - Output vocab size: 2804
 
+## 5. 학습 로그
+
+아래 로그는 Colab에서 실제 학습을 수행하면서 기록한 epoch별 training loss다.
+
+```text
+================================================================================
+Bahdanau Attention Training Log
+Started at: 2026-04-28 06:55:01
+Device: cuda
+PyTorch: 2.10.0+cu128
+Epochs: 8
+Batch size: 64
+Hidden size: 128
+Learning rate: 0.0003
+Training pairs: 10599
+Input vocab size: 4346
+Output vocab size: 2804
+================================================================================
+Epoch 01/8 | train_loss=4.7089 | epoch_seconds=5.1
+Epoch 02/8 | train_loss=3.0993 | epoch_seconds=3.9
+Epoch 03/8 | train_loss=2.7800 | epoch_seconds=4.0
+Epoch 04/8 | train_loss=2.5038 | epoch_seconds=3.9
+Epoch 05/8 | train_loss=2.3009 | epoch_seconds=3.9
+Epoch 06/8 | train_loss=2.1528 | epoch_seconds=3.9
+Epoch 07/8 | train_loss=2.0343 | epoch_seconds=3.9
+Epoch 08/8 | train_loss=1.9327 | epoch_seconds=3.9
+================================================================================
+Finished at: 2026-04-28 06:55:34
+Total training seconds: 32.6
+Final train loss: 1.9327
+================================================================================
+
+Sample Translation Results
+--------------------------------------------------------------------------------
+{"source_french": "j ai ans .", "target_english": "i m .", "predicted_english": "i m going ."}
+{"source_french": "je vais bien .", "target_english": "i m ok .", "predicted_english": "i m going to be ."}
+{"source_french": "ca va .", "target_english": "i m ok .", "predicted_english": "i m going to ."}
+{"source_french": "je suis gras .", "target_english": "i m fat .", "predicted_english": "i m ."}
+{"source_french": "je suis gros .", "target_english": "i m fat .", "predicted_english": "i m a ."}
+{"source_french": "je suis en forme .", "target_english": "i m fit .", "predicted_english": "i m in the same ."}
+{"source_french": "je suis touche !", "target_english": "i m hit !", "predicted_english": "i m sorry ."}
+{"source_french": "je suis touchee !", "target_english": "i m hit !", "predicted_english": "i m going to be ."}
+```
+
 ## 6. 학습 결과
 
 - Final train loss: 1.9327
-- Training time: 32.4 seconds
+- Training time: 32.6 seconds
 
 학습 loss 그래프는 `training_loss.png`에 저장했다.
 
-## 7. 샘플 번역 결과
+![Training Loss](training_loss.png)
+
+## 7. Attention 시각화
+
+`attention_heatmap.png`는 decoder가 target token을 생성할 때 source token의 어느 위치를 참고했는지 보여준다.
+이 heatmap은 Bahdanau attention의 alignment 학습 결과를 직관적으로 확인하기 위한 시각화다.
+
+![Attention Heatmap](attention_heatmap.png)
+
+## 8. 샘플 번역 결과
 
 ```json
 [
@@ -122,19 +157,14 @@ Decoder는 이전 target token embedding과 attention context vector를 concat�
 ]
 ```
 
-## 8. Attention 시각화
-
-`attention_heatmap.png`는 decoder가 target token을 생성할 때 source token의 어느 위치를 참고했는지 보여준다.
-이 heatmap은 Bahdanau attention의 alignment 학습 결과를 직관적으로 확인하기 위한 시각화다.
-
 ## 9. 제출 파일 목록
 
 - `README.md`: 실습 설명 및 결과 요약
 - `annotated_bahdanau_attention.py`: 원 논문 개념과 연결한 주석 강화 모델 코드
 - `metrics.json`: 학습 설정, loss history, sample translation 결과
+- `training_log.txt`: Colab에서 실행한 epoch별 학습 로그
 - `training_loss.png`: epoch별 training loss 그래프
 - `attention_heatmap.png`: attention weight 시각화
-- `attention_seq2seq_state_dict.pt`: 학습된 PyTorch 모델 가중치
 - `ORIGINAL_REPOSITORY_README.md`: 원본 repository README 참고본
 - `ORIGINAL_model.py`: 원본 model.py 참고본
 - `ORIGINAL_load_data.py`: 원본 load_data.py 참고본
