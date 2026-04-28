@@ -1,4 +1,4 @@
-# 🔥 Seq2Seq + Attention 기반 기계번역 구현 (PyTorch)
+# Seq2Seq + Attention 기반 기계번역 구현 (PyTorch)
 
 ---
 
