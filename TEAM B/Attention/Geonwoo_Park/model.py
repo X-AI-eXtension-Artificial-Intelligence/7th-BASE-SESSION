@@ -172,7 +172,6 @@ class AttnDecoder(nn.Module):
 class EncoderDecoder(nn.Module):
     """
     Wrapper. decoder를 토글하면 attention 유/무 비교 ablation 가능.
-    -> 발표 시 RNNencdec vs RNNsearch 직접 비교 데모 가능
     """
     def __init__(self, hidden_size, input_vocab_size, output_vocab_size):
         super(EncoderDecoder, self).__init__()
