@@ -10,7 +10,6 @@ class EncoderRNN(nn.Module):
         self.hidden_size = hidden_size
         self.embedding = nn.Embedding(input_size, hidden_size)
         self.dropout = nn.Dropout(dropout_p)
-        # batch_first=True면 입력이 [Batch, Seq, Feature] 순서여야 해
         self.gru = nn.GRU(hidden_size, hidden_size, batch_first=True)
 
     def forward(self, input):
