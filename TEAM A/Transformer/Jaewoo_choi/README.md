@@ -1,16 +1,16 @@
 # Transformer Practice Based on hyunwoongko/transformer
 
-## 1. 실습 개요
+## 1. 개요
 
-본 폴더는 `hyunwoongko/transformer` repository를 참고하여 Transformer 구조를 Colab에서 직접 실행한 실습 결과다.
+본 폴더는 `hyunwoongko/transformer` repository를 참고하여 Transformer 구조를 Colab에서 직접 실행한 결과입니다.
 
-원본 repository는 `Attention Is All You Need` 논문의 Transformer 구조를 PyTorch로 구현한 예제이며, README에는 Positional Encoding, Multi-Head Attention, Scaled Dot-Product Attention, LayerNorm, Position-wise Feed Forward, Encoder/Decoder 구조가 정리되어 있다.
+원본 repository는 `Attention Is All You Need` 논문의 Transformer 구조를 PyTorch로 구현한 예제이며, README에는 Positional Encoding, Multi-Head Attention, Scaled Dot-Product Attention, LayerNorm, Position-wise Feed Forward, Encoder/Decoder 구조가 정리되어 있습니다.
 
-원본 실험은 Multi30K 번역 데이터셋을 기반으로 하지만, 최신 Colab 환경에서는 torchtext와 Multi30K 의존성 충돌이 발생할 수 있다. 따라서 본 실습에서는 원본 구조를 참고하되, Colab에서 안정적으로 학습 가능한 toy reverse-sequence task를 사용했다.
+원본 실험은 Multi30K 번역 데이터셋을 기반으로 하지만, 최신 Colab 환경에서는 torchtext와 Multi30K 의존성 충돌이 발생할 수 있습니다. 따라서 본 실습에서는 원본 구조를 참고하되, Colab에서 안정적으로 학습 가능한 toy reverse-sequence task를 사용하였습니다.
 
 ## 2. 실습 Task
 
-본 실습의 task는 입력 sequence를 뒤집어 출력하는 sequence-to-sequence 문제다.
+본 실습의 task는 입력 sequence를 뒤집어 출력하는 sequence-to-sequence 문제입니다.
 
 예시:
 
@@ -19,25 +19,25 @@ source: T8 T15 T23 T7
 target: T7 T23 T15 T8 <EOS>
 ```
 
-이 task는 실제 번역 문제는 아니지만, Transformer의 encoder-decoder 구조, masked self-attention, encoder-decoder cross-attention, autoregressive decoding이 정상적으로 작동하는지 검증하기에 적합하다.
+이 task는 실제 번역 문제는 아니지만, Transformer의 encoder-decoder 구조, masked self-attention, encoder-decoder cross-attention, autoregressive decoding이 정상적으로 작동하는지 검증하기에 적합합니다.
 
 ## 3. 원 논문과 코드 연결
 
-Transformer는 recurrence나 convolution 없이 attention mechanism만으로 sequence transduction을 수행하는 구조다.
+Transformer는 recurrence나 convolution 없이 attention mechanism만으로 sequence transduction을 수행하는 구조입니다.
 
-핵심 attention 수식은 다음과 같다.
+핵심 attention 수식은 다음과 같습니다.
 
 `Attention(Q, K, V) = softmax(QK^T / sqrt(d_k))V`
 
-본 코드에서는 `ScaledDotProductAttention` 클래스가 이 수식을 구현한다.
+본 코드에서는 `ScaledDotProductAttention` 클래스가 이 수식을 구현합니다.
 
-Multi-Head Attention은 여러 개의 attention head를 병렬로 사용한다.
-각 head는 서로 다른 projection을 통해 token 간 관계를 다른 관점에서 학습한다.
+Multi-Head Attention은 여러 개의 attention head를 병렬로 사용합니다.
+각 head는 서로 다른 projection을 통해 token 간 관계를 다른 관점에서 학습합니다.
 
-Decoder에서는 두 가지 attention이 사용된다.
+Decoder에서는 두 가지 attention이 사용됩니다.
 
-- Masked self-attention: target sequence 내부에서 미래 token을 보지 못하게 한다.
-- Encoder-decoder attention: decoder query가 encoder output을 key/value로 참조한다.
+- Masked self-attention: target sequence 내부에서 미래 token을 보지 못하게 합니다.
+- Encoder-decoder attention: decoder query가 encoder output을 key/value로 참조합니다.
 
 ## 4. 모델 구성
 
@@ -122,16 +122,16 @@ Sample Prediction Results
 - Final valid token accuracy: 0.3323
 - Training time: 12.8 seconds
 
-학습 loss 그래프는 `training_loss.png`에 저장했다.
+학습 loss 그래프는 `training_loss.png`에 저장했습니다.
 
 ![Training Loss](training_loss.png)
 
 ## 8. Attention 시각화
 
-`attention_heatmap.png`는 마지막 decoder layer의 encoder-decoder cross-attention을 시각화한 결과다.
+`attention_heatmap.png`는 마지막 decoder layer의 encoder-decoder cross-attention을 시각화한 결과입니다.
 
-가로축은 source token이고, 세로축은 decoder가 생성한 target token이다.
-색이 진할수록 해당 target token을 생성할 때 해당 source token을 더 강하게 참조했다는 의미다.
+가로축은 source token이고, 세로축은 decoder가 생성한 target token입니다.
+색이 진할수록 해당 target token을 생성할 때 해당 source token을 더 강하게 참조했다는 의미입니다.
 
 ![Attention Heatmap](attention_heatmap.png)
 
