@@ -1,0 +1,46 @@
+================================================================================
+Transformer Training Log
+Started at: 2026-05-02 18:20:58
+Device: cuda
+PyTorch: 2.10.0+cu128
+Task: reverse sequence toy seq2seq
+Vocab size: 60
+Train samples: 6000
+Valid samples: 1000
+D_MODEL: 64
+N_HEAD: 4
+N_LAYERS: 2
+FFN_HIDDEN: 256
+BATCH_SIZE: 128
+EPOCHS: 12
+LEARNING_RATE: 0.0003
+Trainable parameters: 245052
+================================================================================
+Epoch 01/12 | train_loss=3.9599 | valid_loss=3.8203 | train_token_acc=0.1095 | valid_token_acc=0.1258 | epoch_seconds=2.0
+Epoch 02/12 | train_loss=3.7179 | valid_loss=3.5233 | train_token_acc=0.1376 | valid_token_acc=0.1648 | epoch_seconds=1.0
+Epoch 03/12 | train_loss=3.4285 | valid_loss=3.2344 | train_token_acc=0.1718 | valid_token_acc=0.2031 | epoch_seconds=1.0
+Epoch 04/12 | train_loss=3.1972 | valid_loss=3.0244 | train_token_acc=0.1996 | valid_token_acc=0.2214 | epoch_seconds=1.0
+Epoch 05/12 | train_loss=3.0234 | valid_loss=2.8659 | train_token_acc=0.2214 | valid_token_acc=0.2305 | epoch_seconds=1.0
+Epoch 06/12 | train_loss=2.8860 | valid_loss=2.7273 | train_token_acc=0.2335 | valid_token_acc=0.2404 | epoch_seconds=1.1
+Epoch 07/12 | train_loss=2.7672 | valid_loss=2.6074 | train_token_acc=0.2438 | valid_token_acc=0.2527 | epoch_seconds=1.0
+Epoch 08/12 | train_loss=2.6615 | valid_loss=2.5200 | train_token_acc=0.2551 | valid_token_acc=0.2559 | epoch_seconds=1.0
+Epoch 09/12 | train_loss=2.5624 | valid_loss=2.4122 | train_token_acc=0.2684 | valid_token_acc=0.2810 | epoch_seconds=1.0
+Epoch 10/12 | train_loss=2.4758 | valid_loss=2.3248 | train_token_acc=0.2798 | valid_token_acc=0.2951 | epoch_seconds=1.0
+Epoch 11/12 | train_loss=2.3885 | valid_loss=2.2387 | train_token_acc=0.2972 | valid_token_acc=0.3064 | epoch_seconds=1.0
+Epoch 12/12 | train_loss=2.3150 | valid_loss=2.1373 | train_token_acc=0.3107 | valid_token_acc=0.3323 | epoch_seconds=1.0
+================================================================================
+Finished at: 2026-05-02 18:21:11
+Total training seconds: 12.8
+Final train loss: 2.3150
+Final valid loss: 2.1373
+Final valid token accuracy: 0.3323
+================================================================================
+
+Sample Prediction Results
+--------------------------------------------------------------------------------
+{"source": "T8 T38 T54 T4 T15 T43", "target_reversed": "T43 T15 T4 T54 T38 T8 <EOS>", "predicted": "<SOS> T4 T43 T4 T15 T4 T8 T4 <EOS>"}
+{"source": "T26 T46 T43 T41 T40 T35", "target_reversed": "T35 T40 T41 T43 T46 T26 <EOS>", "predicted": "<SOS> T40 T35 T46 T41 T46 T41 T46 <EOS>"}
+{"source": "T53 T18 T50 T33 T54 T40 T16", "target_reversed": "T16 T40 T54 T33 T50 T18 T53 <EOS>", "predicted": "<SOS> T40 T53 T33 T40 T54 T33 T40 T53 T50 T53 T50 T53 <EOS>"}
+{"source": "T57 T26 T35 T58 T41 T24 T52 T26", "target_reversed": "T26 T52 T24 T41 T58 T35 T26 T57 <EOS>", "predicted": "<SOS> T26 T24 T52 T57 T59 T57 T59 T57 <EOS>"}
+{"source": "T40 T45 T56 T13", "target_reversed": "T13 T56 T45 T40 <EOS>", "predicted": "<SOS> T40 T56 T40 T45 T40 <EOS>"}
+{"source": "T50 T32 T21 T47 T9 T8", "target_reversed": "T8 T9 T47 T21 T32 T50 <EOS>", "predicted": "<SOS> T9 T8 T21 T47 T9 <EOS>"}

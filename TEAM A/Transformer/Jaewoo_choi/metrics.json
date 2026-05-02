@@ -1,0 +1,159 @@
+{
+  "source_repo": "https://github.com/hyunwoongko/transformer",
+  "paper": "Attention Is All You Need",
+  "task": "toy reverse-sequence seq2seq",
+  "seed": 42,
+  "device": "cuda",
+  "torch_version": "2.10.0+cu128",
+  "vocab_size": 60,
+  "num_train_samples": 6000,
+  "num_valid_samples": 1000,
+  "min_seq_len": 4,
+  "max_seq_len": 10,
+  "max_len": 32,
+  "d_model": 64,
+  "n_head": 4,
+  "n_layers": 2,
+  "ffn_hidden": 256,
+  "drop_prob": 0.1,
+  "batch_size": 128,
+  "epochs": 12,
+  "learning_rate": 0.0003,
+  "trainable_parameters": 245052,
+  "started_at": "2026-05-02 18:20:58",
+  "finished_at": "2026-05-02 18:21:11",
+  "training_seconds": 12.792654275894165,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 3.9599215882889767,
+      "valid_loss": 3.8202785551548004,
+      "train_token_acc": 0.10946254409628553,
+      "valid_token_acc": 0.12578222778473092,
+      "seconds": 1.9912073612213135
+    },
+    {
+      "epoch": 2,
+      "train_loss": 3.717892159806921,
+      "valid_loss": 3.5233439207077026,
+      "train_token_acc": 0.13762191326001244,
+      "valid_token_acc": 0.16483103879849811,
+      "seconds": 0.9560384750366211
+    },
+    {
+      "epoch": 3,
+      "train_loss": 3.4285069323600608,
+      "valid_loss": 3.2343581914901733,
+      "train_token_acc": 0.17175762606349865,
+      "valid_token_acc": 0.20312891113892365,
+      "seconds": 0.9605498313903809
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.1972380749722746,
+      "valid_loss": 3.0244305431842804,
+      "train_token_acc": 0.19958497613612783,
+      "valid_token_acc": 0.2214017521902378,
+      "seconds": 0.9522392749786377
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.023432635246439,
+      "valid_loss": 2.865909308195114,
+      "train_token_acc": 0.2213737289894169,
+      "valid_token_acc": 0.23053817271589486,
+      "seconds": 1.0454485416412354
+    },
+    {
+      "epoch": 6,
+      "train_loss": 2.885960284699785,
+      "valid_loss": 2.727348417043686,
+      "train_token_acc": 0.23353392820087154,
+      "valid_token_acc": 0.2404255319148936,
+      "seconds": 1.0560500621795654
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.767222815371574,
+      "valid_loss": 2.6074335277080536,
+      "train_token_acc": 0.2437850176385142,
+      "valid_token_acc": 0.25269086357947435,
+      "seconds": 0.969362735748291
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.6614732995946357,
+      "valid_loss": 2.5199685096740723,
+      "train_token_acc": 0.25511516912222454,
+      "valid_token_acc": 0.25594493116395495,
+      "seconds": 0.9589197635650635
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.562437189386246,
+      "valid_loss": 2.4122053384780884,
+      "train_token_acc": 0.26839593276613405,
+      "valid_token_acc": 0.2809762202753442,
+      "seconds": 0.971442699432373
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.475760373663395,
+      "valid_loss": 2.324761927127838,
+      "train_token_acc": 0.2798298402158124,
+      "valid_token_acc": 0.2951188986232791,
+      "seconds": 0.9602506160736084
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.388496089488902,
+      "valid_loss": 2.2386936247348785,
+      "train_token_acc": 0.29724009130525003,
+      "valid_token_acc": 0.30638297872340425,
+      "seconds": 0.9986305236816406
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.31497475441466,
+      "valid_loss": 2.1373002231121063,
+      "train_token_acc": 0.3107491180742893,
+      "valid_token_acc": 0.33229036295369213,
+      "seconds": 0.9702248573303223
+    }
+  ],
+  "sample_results": [
+    {
+      "source": "T8 T38 T54 T4 T15 T43",
+      "target_reversed": "T43 T15 T4 T54 T38 T8 <EOS>",
+      "predicted": "<SOS> T4 T43 T4 T15 T4 T8 T4 <EOS>"
+    },
+    {
+      "source": "T26 T46 T43 T41 T40 T35",
+      "target_reversed": "T35 T40 T41 T43 T46 T26 <EOS>",
+      "predicted": "<SOS> T40 T35 T46 T41 T46 T41 T46 <EOS>"
+    },
+    {
+      "source": "T53 T18 T50 T33 T54 T40 T16",
+      "target_reversed": "T16 T40 T54 T33 T50 T18 T53 <EOS>",
+      "predicted": "<SOS> T40 T53 T33 T40 T54 T33 T40 T53 T50 T53 T50 T53 <EOS>"
+    },
+    {
+      "source": "T57 T26 T35 T58 T41 T24 T52 T26",
+      "target_reversed": "T26 T52 T24 T41 T58 T35 T26 T57 <EOS>",
+      "predicted": "<SOS> T26 T24 T52 T57 T59 T57 T59 T57 <EOS>"
+    },
+    {
+      "source": "T40 T45 T56 T13",
+      "target_reversed": "T13 T56 T45 T40 <EOS>",
+      "predicted": "<SOS> T40 T56 T40 T45 T40 <EOS>"
+    },
+    {
+      "source": "T50 T32 T21 T47 T9 T8",
+      "target_reversed": "T8 T9 T47 T21 T32 T50 <EOS>",
+      "predicted": "<SOS> T9 T8 T21 T47 T9 <EOS>"
+    }
+  ],
+  "final_train_loss": 2.31497475441466,
+  "final_valid_loss": 2.1373002231121063,
+  "final_valid_token_acc": 0.33229036295369213
+}
