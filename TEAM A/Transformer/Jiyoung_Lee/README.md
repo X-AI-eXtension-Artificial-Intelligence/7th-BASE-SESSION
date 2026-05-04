@@ -15,22 +15,22 @@ transformer/
 ├── data.py                          # 데이터 로딩 (Multi30K)
 │
 └── models/
-    ├── embedding/
+    ├── embedding/                   # 토큰을 벡터로 변환하는 곳 
     │   ├── token_embeddings.py      # 토큰 → 벡터 변환
     │   ├── positional_encoding.py   # 위치 정보 인코딩 (sin/cos)
     │   └── transformer_embedding.py # 위 둘을 합친 최종 임베딩
     │
-    ├── layers/
+    ├── layers/                             # attention, FNN,, 연산 
     │   ├── scale_dot_product_attention.py  #  Attention 핵심 연산
     │   ├── multi_head_attention.py         #  Multi-Head Attention
     │   ├── position_wise_feed_forward.py   # FFN (2-layer MLP)
     │   └── layer_norm.py                   # Layer Normalization
     │
-    ├── blocks/
+    ├── blocks/                      # 레이어 1개 블록(Encoder/Decoder)
     │   ├── encoder_layer.py         # EncoderLayer 1개 블록
     │   └── decoder_layer.py         # DecoderLayer 1개 블록
     │
-    └── model/
+    └── model/                       # 전체 실행(Encdoer, Decoder, Transformer
         ├── encoder.py               # EncoderLayer × N 스택
         ├── decoder.py               # DecoderLayer × N 스택
         └── transformer.py           # 최상위: Encoder + Decoder 조립
