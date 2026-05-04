@@ -40,8 +40,9 @@ class MultiHeadAttention(nn.Module):
         # shape: [batch, length, d_model]
 
         # ---------------------------------------------------
-        # 2. head 개수만큼 split
+        # 2. head 개수만큼 split 
         # ---------------------------------------------------
+        # d_model=512를 n_head=8로 나눠서 64차원으로 독립적으로 계산 
         q, k, v = self.split(q), self.split(k), self.split(v)
         # shape: [batch, head, length, d_k]
 
