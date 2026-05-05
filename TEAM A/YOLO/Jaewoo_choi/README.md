@@ -1,18 +1,18 @@
 # YOLO v1 Architecture Practice Based on nsoul97/yolov1_pytorch
 
-## 1. 실습 개요
+## 1. 개요
 
-본 폴더는 `nsoul97/yolov1_pytorch` repository를 참고하여 YOLO v1의 핵심 구조를 Colab에서 직접 구현하고 학습한 결과다.
+본 폴더는 `nsoul97/yolov1_pytorch` repository를 참고하여 YOLO v1의 핵심 구조를 Colab에서 직접 구현하고 학습한 결과입니다.
 
-원본 repository는 `You Only Look Once: Unified, Real-Time Object Detection` 논문을 PyTorch로 scratch 구현한 예제이며, ImageNet pretraining, PASCAL VOC 2007/2012 training, VOC 2007 test evaluation 흐름을 포함한다.
+원본 repository는 `You Only Look Once: Unified, Real-Time Object Detection` 논문을 PyTorch로 scratch 구현한 예제이며, ImageNet pretraining, PASCAL VOC 2007/2012 training, VOC 2007 test evaluation 흐름을 포함합니다.
 
-다만 VOC 전체 학습은 Colab 실습용으로 무겁기 때문에, 본 실습에서는 YOLO v1의 핵심 개념인 `S x S grid`, `B bounding boxes`, `confidence`, `class probability`, `YOLO loss`를 synthetic single-object detection task로 재현했다.
+다만 VOC 전체 학습은 Colab 실습용으로 무겁기 때문에, 본 실습에서는 YOLO v1의 핵심 개념인 `S x S grid`, `B bounding boxes`, `confidence`, `class probability`, `YOLO loss`를 synthetic single-object detection task로 재현했습니다.
 
 ## 2. 원본 repository 기반 구조
 
-원본 repository는 YOLO 논문을 PyTorch로 scratch 구현한 project다.
+원본 repository는 YOLO 논문을 PyTorch로 scratch 구현한 project입니다.
 
-README 기준 원본 repository는 다음 내용을 포함한다.
+README 기준 원본 repository는 다음 내용을 포함합니다.
 
 - ImageNet pretraining
 - PASCAL VOC 2007 + 2012 training
@@ -20,16 +20,16 @@ README 기준 원본 repository는 다음 내용을 포함한다.
 - mAP 기반 성능 비교
 - prediction visualization
 
-본 실습 코드는 원본의 전체 VOC 재현이 아니라, YOLO v1의 구조와 loss를 이해하기 위한 lightweight reproduction이다.
+본 실습 코드는 원본의 전체 VOC 재현이 아니라, YOLO v1의 구조와 loss를 이해하기 위한 lightweight reproduction입니다.
 
 ## 3. YOLO v1 핵심 개념
 
-YOLO v1은 object detection을 하나의 regression 문제로 통합한다.
+YOLO v1은 object detection을 하나의 regression 문제로 통합합니다.
 
-기존 detection pipeline은 region proposal, classification, bounding box refinement가 분리되어 있었다.
-YOLO는 이미지를 한 번만 보고 bounding box와 class probability를 동시에 예측한다.
+기존 detection pipeline은 region proposal, classification, bounding box refinement가 분리되어 있습니다.
+YOLO는 이미지를 한 번만 보고 bounding box와 class probability를 동시에 예측합니다.
 
-핵심 구조는 다음과 같다.
+핵심 구조는 다음과 같습니다.
 
 - 이미지를 `S x S` grid로 나눈다.
 - 객체의 중심이 들어있는 grid cell이 해당 객체를 책임진다.
@@ -41,13 +41,13 @@ YOLO는 이미지를 한 번만 보고 bounding box와 class probability를 동�
 
 ## 4. Output Tensor 구조
 
-모델 출력은 다음 형태다.
+모델 출력은 다음 형태입니다.
 
 ```text
 [batch, S, S, B * 5 + C]
 ```
 
-본 실습 설정에서는 다음과 같다.
+본 실습 설정에서는 다음과 같습니다
 
 ```text
 S = 7
@@ -57,47 +57,47 @@ B * 5 + C = 13
 output shape = [batch, 7, 7, 13]
 ```
 
-각 bounding box는 다음 값을 예측한다.
+각 bounding box는 다음 값을 예측합니다.
 
 ```text
 x_cell, y_cell, width, height, confidence
 ```
 
-`x_cell`, `y_cell`은 grid cell 내부 상대 좌표이고, `width`, `height`는 전체 이미지 기준 normalized size다.
+`x_cell`, `y_cell`은 grid cell 내부 상대 좌표이고, `width`, `height`는 전체 이미지 기준 normalized size입니다.
 
 ## 5. YOLO Loss
 
-YOLO loss는 크게 세 가지 항으로 구성된다.
+YOLO loss는 크게 세 가지 항으로 구성됩니다.
 
 ### 5.1 Localization Loss
 
-객체가 있는 cell에서 responsible predictor의 bbox 좌표를 학습한다.
-YOLO v1 논문처럼 width와 height에는 square root를 적용해 작은 box의 오차가 더 민감하게 반영되도록 했다.
+객체가 있는 cell에서 responsible predictor의 bbox 좌표를 학습합니다.
+YOLO v1 논문처럼 width와 height에는 square root를 적용해 작은 box의 오차가 더 민감하게 반영되도록 했습니다.
 
 ### 5.2 Confidence Loss
 
-YOLO에서 confidence는 `Pr(Object) * IoU`로 해석된다.
-따라서 객체가 있는 cell에서는 IoU가 가장 높은 bbox predictor를 responsible predictor로 선택했다.
+YOLO에서 confidence는 `Pr(Object) * IoU`로 해석됩니다.
+따라서 객체가 있는 cell에서는 IoU가 가장 높은 bbox predictor를 responsible predictor로 선택했습니다.
 
-객체가 없는 cell의 confidence는 0에 가까워지도록 학습한다.
+객체가 없는 cell의 confidence는 0에 가까워지도록 학습합니다.
 
 ### 5.3 Classification Loss
 
-객체 중심이 들어있는 cell에서 class probability를 학습한다.
+객체 중심이 들어있는 cell에서 class probability를 학습합니다.
 
 ### 5.4 Loss Weight
 
-`lambda_coord=5.0`으로 bbox 좌표 학습을 강조했고, `lambda_noobj=0.5`로 no-object confidence loss가 과도하게 커지는 것을 완화했다.
+`lambda_coord=5.0`으로 bbox 좌표 학습을 강조했고, `lambda_noobj=0.5`로 no-object confidence loss가 과도하게 커지는 것을 완화했습니다.
 
 ## 6. Synthetic Detection Task
 
-본 실습에서는 이미지마다 하나의 colored rectangle object를 생성했다.
+본 실습에서는 이미지마다 하나의 colored rectangle object를 생성했습니다.
 
 - class 0: red_object
 - class 1: green_object
 - class 2: blue_object
 
-모델은 객체의 class와 bbox 위치를 예측하도록 학습했다.
+모델은 객체의 class와 bbox 위치를 예측하도록 학습했습니다.
 
 ## 7. 실행 환경
 
@@ -179,17 +179,17 @@ Sample Detection Results
 - Final valid class accuracy: 1.0000
 - Training time: 13.9 seconds
 
-학습 loss 그래프는 `training_loss.png`에 저장했다.
+학습 loss 그래프는 `training_loss.png`에 저장했습니다.
 
 ![Training Loss](training_loss.png)
 
 ## 10. Detection Visualization
 
-`detection_prediction.png`는 validation sample에 대해 ground-truth box와 predicted box를 함께 시각화한 결과다.
+`detection_prediction.png`는 validation sample에 대해 ground-truth box와 predicted box를 함께 시각화한 결과입니다.
 
 ![Detection Prediction](detection_prediction.png)
 
-`yolo_grid_prediction.png`는 YOLO v1의 `7 x 7 grid`와 객체 중심을 담당하는 responsible cell을 보여준다.
+`yolo_grid_prediction.png`는 YOLO v1의 `7 x 7 grid`와 객체 중심을 담당하는 responsible cell을 보여줍니다.
 
 ![YOLO Grid](yolo_grid_prediction.png)
 
@@ -352,10 +352,10 @@ Sample Detection Results
 
 ## 13. 한계 및 해석
 
-본 실습은 VOC dataset에서 mAP를 재현하는 실험이 아니다.
-대신 YOLO v1의 핵심 구조인 grid-based prediction, responsible predictor, confidence as IoU, localization/classification loss를 Colab에서 빠르게 학습하고 시각화하기 위한 구조 검증 실험이다.
+본 실습은 VOC dataset에서 mAP를 재현하는 실험은 아닙니다.
+대신 YOLO v1의 핵심 구조인 grid-based prediction, responsible predictor, confidence as IoU, localization/classification loss를 빠르게 학습하고 시각화하기 위한 구조 검증 실험입니다.
 
-실제 VOC 성능 재현을 위해서는 원본 repository처럼 VOC 2007/2012 dataset, ImageNet pretraining, mAP evaluation protocol이 필요하다.
+실제 VOC 성능 재현을 위해서는 원본 repository처럼 VOC 2007/2012 dataset, ImageNet pretraining, mAP evaluation protocol이 필요합니다.
 
 ## 14. 원본 참고 자료
 
