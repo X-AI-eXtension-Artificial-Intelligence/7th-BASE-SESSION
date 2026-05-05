@@ -1,0 +1,20 @@
+# Python 3.9 권장 (3.8도 가능). 3.10 이상은 torch 1.10이 지원하지 않음.
+#
+# 주의: torch와 torchtext는 이 파일로 설치하지 말고
+# 아래 두 가지 명령 중 하나를 따로 실행하세요.
+#
+# [GPU 사용 (NVIDIA CUDA 11.3, 권장)]
+#   pip install torch==1.10.0+cu113 torchtext==0.11.0 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+#
+# [GPU 사용 (CUDA 11.1)]
+#   pip install torch==1.10.0+cu111 torchtext==0.11.0 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+#
+# [CPU 전용]
+#   pip install torch==1.10.0 torchtext==0.11.0
+#
+# 그 다음 이 파일로 나머지 패키지를 설치:
+#   pip install -r requirements.txt
+
+spacy==3.4.4
+numpy==1.22.4
+matplotlib==3.5.3
