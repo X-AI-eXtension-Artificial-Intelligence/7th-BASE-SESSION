@@ -37,7 +37,7 @@ YOLO는 이미지를 한 번만 보고 bounding box와 class probability를 동�
 - 각 bounding box는 `x, y, w, h, confidence`를 가진다.
 - 각 cell은 `C`개의 class probability를 예측한다.
 
-본 실습에서는 `S=7`, `B=2`, `C=3`으로 설정했다.
+본 실습에서는 `S=7`, `B=2`, `C=3`으로 설정했습니다.
 
 ## 4. Output Tensor 구조
 
