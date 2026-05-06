@@ -1,4 +1,4 @@
-# ATTENTION 구현하기
+# TRANSFORMER 구현하기
 
 ## Model Architecture 공부
 
@@ -164,10 +164,6 @@
 - 학습 결과 시각화
 - Train / Validation Loss 그래프 출력
 - 학습 과정 확인
-
----
-
-## README.md
 
 - 프로젝트 개요 작성
 - 실행 방법 정리
