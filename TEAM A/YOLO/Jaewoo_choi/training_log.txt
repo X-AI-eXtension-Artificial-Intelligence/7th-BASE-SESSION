@@ -1,0 +1,52 @@
+================================================================================
+YOLO v1 Synthetic Detection Training Log
+Started at: 2026-05-05 12:46:07
+Device: cuda
+PyTorch: 2.10.0+cu128
+Reference repo: nsoul97/yolov1_pytorch
+Task: synthetic single-object detection
+Image size: 112
+S grid: 7
+B boxes per cell: 2
+C classes: 3
+Train samples: 1200
+Valid samples: 200
+Batch size: 64
+Epochs: 15
+Learning rate: 0.0002
+lambda_coord: 5.0
+lambda_noobj: 0.5
+Trainable parameters: 14482445
+================================================================================
+Epoch 01/15 | train_loss=3.4109 | valid_loss=2.0029 | valid_mean_iou=0.0248 | valid_cls_acc=0.3400 | epoch_seconds=2.6
+Epoch 02/15 | train_loss=1.4409 | valid_loss=1.9097 | valid_mean_iou=0.0999 | valid_cls_acc=0.3867 | epoch_seconds=0.5
+Epoch 03/15 | train_loss=0.8351 | valid_loss=0.9116 | valid_mean_iou=0.4161 | valid_cls_acc=0.9533 | epoch_seconds=0.5
+Epoch 04/15 | train_loss=0.6884 | valid_loss=0.6954 | valid_mean_iou=0.4495 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 05/15 | train_loss=0.6202 | valid_loss=0.6273 | valid_mean_iou=0.4870 | valid_cls_acc=0.9933 | epoch_seconds=0.5
+Epoch 06/15 | train_loss=0.5737 | valid_loss=0.6070 | valid_mean_iou=0.4972 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 07/15 | train_loss=0.5208 | valid_loss=0.5598 | valid_mean_iou=0.5370 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 08/15 | train_loss=0.4828 | valid_loss=0.4719 | valid_mean_iou=0.5784 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 09/15 | train_loss=0.4513 | valid_loss=0.5173 | valid_mean_iou=0.5452 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 10/15 | train_loss=0.4267 | valid_loss=0.4539 | valid_mean_iou=0.6514 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 11/15 | train_loss=0.4169 | valid_loss=0.4497 | valid_mean_iou=0.6283 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 12/15 | train_loss=0.4043 | valid_loss=0.4460 | valid_mean_iou=0.6181 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 13/15 | train_loss=0.4026 | valid_loss=0.5061 | valid_mean_iou=0.6128 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 14/15 | train_loss=0.3901 | valid_loss=0.4332 | valid_mean_iou=0.6379 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+Epoch 15/15 | train_loss=0.3703 | valid_loss=0.4429 | valid_mean_iou=0.6516 | valid_cls_acc=1.0000 | epoch_seconds=0.5
+================================================================================
+Finished at: 2026-05-05 12:46:21
+Total training seconds: 13.9
+Final train loss: 0.3703
+Final valid loss: 0.4429
+Final valid mean IoU: 0.6527
+Final valid class accuracy: 1.0000
+================================================================================
+
+Sample Detection Results
+--------------------------------------------------------------------------------
+{"index": 0, "target_class": "blue_object", "target_box_xywh": [0.8161190492766244, 0.5558473723275321, 0.29567956924438477, 0.2248469889163971], "predicted_class": "blue_object", "predicted_score": 0.5101814270019531, "predicted_box_xywh": [0.8239169120788574, 0.5571401715278625, 0.1938742697238922, 0.23528283834457397], "predicted_cell": [5, 3], "predicted_box_predictor": 0}
+{"index": 1, "target_class": "red_object", "target_box_xywh": [0.2890298180282116, 0.22414307934897287, 0.2243179827928543, 0.3529384732246399], "predicted_class": "red_object", "predicted_score": 0.18856008350849152, "predicted_box_xywh": [0.3007212281227112, 0.21818839013576508, 0.2537601888179779, 0.253042072057724], "predicted_cell": [2, 1], "predicted_box_predictor": 0}
+{"index": 2, "target_class": "red_object", "target_box_xywh": [0.23706271818705968, 0.43417240572827204, 0.22710074484348297, 0.1841491013765335], "predicted_class": "red_object", "predicted_score": 0.2663821280002594, "predicted_box_xywh": [0.21989448368549347, 0.4106571674346924, 0.25653088092803955, 0.2770344913005829], "predicted_cell": [1, 2], "predicted_box_predictor": 0}
+{"index": 3, "target_class": "blue_object", "target_box_xywh": [0.3138822615146637, 0.5628830109323774, 0.23398546874523163, 0.19300122559070587], "predicted_class": "blue_object", "predicted_score": 0.22970637679100037, "predicted_box_xywh": [0.29416483640670776, 0.5586933493614197, 0.32137513160705566, 0.3885039985179901], "predicted_cell": [2, 3], "predicted_box_predictor": 1}
+{"index": 4, "target_class": "red_object", "target_box_xywh": [0.5877050970281873, 0.6750730616705758, 0.17999356985092163, 0.3294733464717865], "predicted_class": "red_object", "predicted_score": 0.2763672471046448, "predicted_box_xywh": [0.5872442126274109, 0.6669409871101379, 0.1787576824426651, 0.2893514037132263], "predicted_cell": [4, 4], "predicted_box_predictor": 1}
+{"index": 5, "target_class": "red_object", "target_box_xywh": [0.19247100608689444, 0.8340297852243695, 0.3359254002571106, 0.1761445254087448], "predicted_class": "red_object", "predicted_score": 0.19902755320072174, "predicted_box_xywh": [0.20159949362277985, 0.8376478552818298, 0.2587973177433014, 0.27803635597229004], "predicted_cell": [1, 5], "predicted_box_predictor": 0}
