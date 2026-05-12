@@ -5,7 +5,7 @@ from math import ceil, floor
 from typing import Optional, List, Tuple, Union
 
 # 1. Locally Connected 2D Layer 정의
-# 일반적인 Convolution과 달리 가중치(Weights)를 공유하지 않고, 각 위치마다 독립적인 가중치를 사용한다.
+# 일반적인 Convolution과 달리 가중치(Weights)를 공유하지 않고, 각 위치마다 독립적인 가중치를 사용
 class LocallyConnected2d(nn.Module):
     """
     Locally Connected 2D Layer는 2D Convolution과 유사하게 동작하지만,
@@ -36,7 +36,7 @@ class LocallyConnected2d(nn.Module):
         self.padding = padding
 
         # 가중치 파라미터 생성: (1, 입력채널, 출력채널, 출력높이, 출력너비, 커널높이, 커널너비)
-        # 위치(output_h, output_w)마다 별도의 커널 가중치를 가진다는 점이 핵심이다.
+        # 위치(output_h, output_w)마다 별도의 커널 가중치를 가진다는 점이 핵심
         self.weight = nn.Parameter(th.randn(1, self.in_channels, self.out_channels,
                                             self.output_h, self.output_w,
                                             self.kernel_size, self.kernel_size))
@@ -46,28 +46,27 @@ class LocallyConnected2d(nn.Module):
 
     def forward(self, x: th.Tensor) -> th.Tensor:
         """
-        순전파 단계. Convolution처럼 윈도우를 추출하지만, 각 위치마다 다른 가중치를 곱한다.
+        순전파 단계. Convolution처럼 윈도우를 추출하지만, 각 위치마다 다른 가중치를 곱함
         """
         # 입력 데이터 가장자리에 패딩 추가
         x = F.pad(x, (self.padding,) * 4)
-        # unfold를 사용하여 슬라이딩 윈도우 방식으로 패치(Patch)를 추출한다.
+        # unfold를 사용하여 슬라이딩 윈도우 방식으로 패치(Patch)를 추출
         # 차원 조작을 통해 (N, C, H_out, W_out, k, k) 형태의 윈도우 텐서를 만든다.
         windows = x.unfold(2, self.kernel_size, self.stride).unfold(3, self.kernel_size, self.stride)[:, :, None, ...]
-        # 추출된 윈도우와 위치별 가중치를 곱하고 채널/커널 차원에 대해 합산한 뒤 바이어스를 더한다.
+        # 추출된 윈도우와 위치별 가중치를 곱하고 채널/커널 차원에 대해 합산한 뒤 바이어스를 더함
         y = th.sum(self.weight * windows, dim=[1, 5, 6]) + self.bias
         return y
 
-
 # 2. ConvModule 정의
-# 논문의 Network Design 그림에 등장하는 반복적인 컨볼루션 블록들을 구성하기 위한 클래스이다.
+# 논문의 Network Design 그림에 등장하는 반복적인 컨볼루션 블록들을 구성하기 위한 클래스
 class ConvModule(nn.Module):
     """
-    ConvModule은 논문에 제시된 아키텍처 설정을 기반으로 컨볼루션 레이어들을 순차적으로 생성한다.
+    ConvModule은 논문에 제시된 아키텍처 설정을 기반으로 컨볼루션 레이어들을 순차적으로 생성
     """
 
     def __init__(self, in_channels: int, module_config: List[Union[List, Tuple]]) -> None:
         """
-        설정 리스트를 받아 레이어를 쌓는다.
+        설정 리스트를 받아 레이어를 쌓음
         - ('c', ...): 컨볼루션 레이어
         - ('p', ...): 맥스풀링 레이어
         - [[layer_configs], k]: 특정 레이어 조합을 k번 반복
@@ -95,8 +94,8 @@ class ConvModule(nn.Module):
 
     def _add_layer(self, in_channels: int, layer_config: Tuple) -> int:
         """
-        컨볼루션 또는 맥스풀링 레이어를 실제로 생성하여 리스트에 추가한다.
-        컨볼루션은 Conv2d -> BatchNorm -> LeakyReLU 순서로 구성된다.
+        컨볼루션 또는 맥스풀링 레이어를 실제로 생성하여 리스트에 추가
+        컨볼루션은 Conv2d -> BatchNorm -> LeakyReLU 순서로 구성
         """
         # 'c'로 시작하면 컨볼루션 레이어 생성
         if layer_config[0] == 'c':
@@ -106,7 +105,7 @@ class ConvModule(nn.Module):
             # 입력과 출력의 가로세로 크기를 유지하기 위한 'Same' 패딩 계산
             padding = ceil((kernel_size - stride) / 2)
 
-            # 레이어 시퀀스 정의: BatchNorm을 쓰기 때문에 Conv2d의 bias는 False로 둔다.
+            # 레이어 시퀀스 정의: BatchNorm을 쓰기 때문에 Conv2d의 bias는 False 설정
             layer = nn.Sequential(nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding,
                                             bias=False),
                                   nn.BatchNorm2d(out_channels),
@@ -119,7 +118,7 @@ class ConvModule(nn.Module):
             in_channels = out_channels
 
         # 'p'로 시작하면 맥스풀링 레이어 생성
-        elif layer_config[0] == 'p':
+        elif layer_config[0] == 'p'
             kernel_size, stride = layer_config[1:]
             self.layers.append(nn.MaxPool2d(kernel_size, stride))
 
@@ -130,19 +129,19 @@ class ConvModule(nn.Module):
 
     def forward(self, x: th.Tensor) -> th.Tensor:
         """
-        입력 데이터를 시퀀셜 레이어에 통과시킨다.
+        입력 데이터를 시퀀셜 레이어에 통과시킴
         """
         return self.layers(x)
 
 
 # 3. YOLOv1 메인 모델 클래스 정의
-# 모드에 따라 ImageNet 사전 학습용(Classification) 또는 VOC 탐지용(Detection) 구조를 가진다.
+# 모드에 따라 ImageNet 사전 학습용(Classification) 또는 VOC 탐지용(Detection) 구조를 가짐
 class YOLOv1(nn.Module):
     """
-    YOLOv1 모델. ImageNet으로 사전 학습된 후 PASCAL VOC 데이터로 파인튜닝된다.
+    YOLOv1 모델. ImageNet으로 사전 학습된 후 PASCAL VOC 데이터로 파인튜닝
     """
     # 논문의 Table 1 구조를 그대로 리스트로 정의한 백본(Backbone) 설정
-    conv_backbone_config = [[('c', 7, 64, 2), ('p', 2, 2)],
+    conv_backbone_config = [[('c', 7, 64, 2), ('p', 2, 2)]
                             [('c', 3, 192), ('p', 2, 2)],
                             [('c', 1, 128), ('c', 3, 256), ('c', 1, 256), ('c', 3, 512), ('p', 2, 2)],
                             [[[('c', 1, 256), ('c', 3, 512)], 4], ('c', 1, 512), ('c', 3, 1024), ('p', 2, 2)],
@@ -154,7 +153,7 @@ class YOLOv1(nn.Module):
 
     def __init__(self, S: int, B: int, C: int, mode: Optional[str] = 'detection') -> None:
         """
-        YOLO 모델 초기화. 모드(detection/classification)에 따라 아키텍처가 바뀐다.
+        YOLO 모델 초기화. 모드(detection/classification)에 따라 아키텍처가 바뀌게 됨
         S: 격자 크기(7x7), B: 격자당 상자 수(2), C: 클래스 수(VOC=20, ImageNet=1000)
         """
         super(YOLOv1, self).__init__()
@@ -213,7 +212,7 @@ class YOLOv1(nn.Module):
 
     def _forward_classification(self, x: th.Tensor) -> th.Tensor:
         """
-        분류(Classification)를 위한 순전파. 이미지넷 사전 학습 시 사용.
+        분류(Classification)를 위한 순전파. 이미지넷 사전 학습 시 사용
         """
         x = self.backbone(x)
         y = self.classification_head(x)
@@ -221,7 +220,7 @@ class YOLOv1(nn.Module):
 
     def _forward_detection(self, x: th.Tensor) -> th.Tensor:
         """
-        물체 탐지(Detection)를 위한 순전파. VOC 학습 및 테스트 시 사용.
+        물체 탐지(Detection)를 위한 순전파. VOC 학습 및 테스트 시 사용
         """
         # 1. 백본을 통해 이미지 특징 추출
         x = self.backbone(x)
