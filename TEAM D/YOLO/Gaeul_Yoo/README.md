@@ -1,1 +1,2 @@
-How to RUN  
+# YOLO_practice
+YOLO 아키텍처 학습 및 구현
