@@ -1,38 +1,57 @@
-# Vision Transformer from Scratch [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/10AYlqsACfMiuMiMSVQjcW8NnkGiJrHLh?usp=sharing)
+# Vision Transformer (ViT) from Scratch
 
-This is a simplified PyTorch implementation of the paper [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/abs/2010.11929). The goal of this project is to provide a simple and easy-to-understand implementation. The code is not optimized for speed and is not intended to be used for production.
+PyTorch로 구현한 Vision Transformer (ViT).
+논문 [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/abs/2010.11929) (Dosovitskiy et al., 2020) 기반.
 
-Check out [this post](https://medium.com/towards-data-science/implementing-vision-transformer-vit-from-scratch-3e192c6155f0) for step-by-step guide on implementing ViT in detail.
+## Paper Overview
+
+기존 컴퓨터 비전은 CNN이 주류였지만, ViT는 NLP에서 성공한 Transformer 구조를 이미지에 그대로 적용한 시도입니다.
+
+핵심 아이디어는 이미지를 일정 크기의 패치로 나눠 각 패치를 NLP의 토큰처럼 취급하는 것입니다. 이렇게 만든 패치 시퀀스를 표준 Transformer Encoder에 그대로 입력합니다.
+
+**주요 구성 요소:**
+- **Patch Embedding** — 이미지를 `P×P` 크기의 패치로 분할하고 linear projection으로 벡터화
+- **[CLS] Token** — 시퀀스 앞에 붙는 학습 가능한 토큰. 최종 분류에 사용 (BERT와 동일한 방식)
+- **Position Embedding** — 패치 순서 정보를 주입하기 위한 학습 가능한 1D position embedding
+- **Transformer Encoder** — Multi-Head Self-Attention + MLP 블록을 L번 반복. Pre-LN 구조 사용
+- **Classification Head** — [CLS] 토큰의 출력을 Linear layer에 통과시켜 분류
+
+**논문의 주요 발견:**
+- 중간 규모 데이터셋(ImageNet 등)에서는 CNN보다 성능이 낮지만, 대규모 데이터(JFT-300M 등)로 사전학습하면 CNN을 능가
+- Inductive bias(지역성, 이동 불변성)가 없는 대신, 충분한 데이터가 주어지면 전역적인 관계를 더 잘 학습
+
+## Implementation
+
+이 구현은 논문의 구조를 최대한 단순하게 재현하는 것을 목표로 합니다. 속도 최적화보다 가독성에 중점을 두었습니다.
+
+```
+vit.py      # 모델 구조 (PatchEmbeddings, MultiHeadAttention, Encoder 등)
+train.py    # 학습 루프 및 config
+data.py     # CIFAR-10 데이터 로딩 및 전처리
+utils.py    # 체크포인트 저장/로드, attention 시각화
+```
 
 ## Usage
 
-Dependencies:
-- PyTorch 1.13.1 ([install instructions](https://pytorch.org/get-started/locally/))
-- torchvision 0.14.1 ([install instructions](https://pytorch.org/get-started/locally/))
-- matplotlib 3.7.1 to generate plots for model inspection
-
-Run the below script to install the dependencies
+**설치**
 ```bash
 pip install -r requirements.txt
 ```
 
-You can find the implementation in the `vit.py` file. The main class is `ViTForImageClassification`, which contains the embedding layer, the transformer encoder, and the classification head. All of the modules are heavily commented to make it easier to understand.
-
-The model config is defined as a python dictionary in `train.py`, you can experiment with different hyperparameters there. Training parameters can be passed using the command line. For example, to train the model for 10 epochs with a batch size of 32, you can run:
-
+**학습**
 ```bash
-python train.py --exp-name vit-with-10-epochs --epochs 10 --batch-size 32
+python train.py --exp-name vit-cifar10 --epochs 100 --batch-size 256 --lr 1e-2
 ```
 
-Please have a look at the `train.py` file for more details.
+결과는 `experiments/<exp-name>/` 에 저장됩니다.
 
-## Results
+## Config
 
-The model was trained on the CIFAR-10 dataset for 100 epochs with a batch size of 256. The learning rate was set to 0.01 and no learning rate schedule was used. The model config was used to train the model:
+`train.py`에서 모델 구조를 수정할 수 있습니다.
 
 ```python
 config = {
-    "patch_size": 4,
+    "patch_size": 4,           # 32x32 이미지 → 8x8 = 64 패치
     "hidden_size": 48,
     "num_hidden_layers": 4,
     "num_attention_heads": 4,
@@ -44,22 +63,17 @@ config = {
     "num_classes": 10,
     "num_channels": 3,
     "qkv_bias": True,
+    "use_faster_attention": True,
 }
 ```
 
-The model is much smaller than the original ViT models from the paper (which has at least 12 layers and hidden size of 768) as I just want to illustrate how the model works rather than achieving state-of-the-art performance.
+> 논문의 ViT-Base는 12 layers, hidden size 768로 훨씬 크지만, 여기서는 구조 이해를 위해 경량 모델을 사용합니다.
 
-These are some results of the model:
+## Results
 
-![](/assets/metrics.png)
-*Train loss, test loss and accuracy of the model during training.*
+CIFAR-10 기준 100 epoch 학습 결과 테스트 정확도 **75.5%** 달성.
 
-The model was able to achieve 75.5% accuracy on the test set after 100 epochs of training.
+## References
 
-![](/assets/attention.png)
-*Attention maps of the model for different test images*
-
-You can see that the model's attentions are able to capture the objects from different classes pretty well. It learned to focus on the objects and ignore the background.
-
-These visualizations are generated using the notebook `inspect.ipynb`.
-
+- [An Image is Worth 16x16 Words (arXiv)](https://arxiv.org/abs/2010.11929)
+- [Original implementation](https://github.com/tintn/vision-transformer-from-scratch)
